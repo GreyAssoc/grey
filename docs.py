@@ -10,6 +10,8 @@ jinja_env = jinja2.Environment()
 
 dir = pathlib.Path().absolute()
 
+currdate = datetime.now()
+currdate = currdate.strftime("%d %B %Y")
 
 # Find Spreadsheet
 for i in glob.glob("00.0 - DATA*"):
@@ -17,7 +19,7 @@ for i in glob.glob("00.0 - DATA*"):
 
 # User selects AO
 title = "Select the AO you wish to produce a document for:"
-options = ["AO 1", "AO 2", "AO 3", "AO 4", "AO 5"]
+options = ["AO 1", "AO 2", "AO 3", "AO 4", "AO 5", "AO 6", "AO 7", "AO 8", "AO 9"]
 selected_ao, index = pick(options, title)
 print(selected_ao)
 #print(index)
@@ -26,7 +28,7 @@ for f in glob.glob(selected_ao+"*"):
 
 # User selects document
 title = "Select the document you wish to produce:"
-options = ["01 - Letter of Appointment BO", "01 - Letter of Appointment AO", "01 - Notices Served (ALL) - Corr (Email)", "01 - Notices Served (ALL) - Corr", "01 - Notices Served (ALL) - Prop (Email)", "01 - Notices Served (ALL) - Prop", "05.1 - Conditional Consent", "05.1 - Conditional Consent (BO SIGNATURE)", "12.1 - Award 7th", "12.1 - Award D1", "14.1 - Schedule of Condition"]
+options = ["01 - Letter of Appointment BO", "01 - Letter of Appointment AO", "02 - [INSERT DATE] - Notices Served (ALL) - Corr", "02 - [INSERT DATE] - Notices Served (ALL) - Corr (Email)", "02 - [INSERT DATE] - Notices Served (ALL) - Prop", "02 - [INSERT DATE] - Notices Served (ALL) - Prop (Email)", "02 - [INSERT DATE] - Notices Served (s1, s6) - Corr", "02 - [INSERT DATE] - Notices Served (s1, s6) - Corr (Email)", "02 - [INSERT DATE] - Notices Served (s1, s6) - Prop", "02 - [INSERT DATE] - Notices Served (s1, s6) - Prop (Email)", "02 - [INSERT DATE] - Notices Served (s2) - Corr", "02 - [INSERT DATE] - Notices Served (s2) - Corr (Email)", "02 - [INSERT DATE] - Notices Served (s2) - Prop", "02 - [INSERT DATE] - Notices Served (s2) - Prop (Email)", "02 - [INSERT DATE] - Notices Served (s2, s6) - Corr", "02 - [INSERT DATE] - Notices Served (s2, s6) - Corr (Email)", "02 - [INSERT DATE] - Notices Served (s2, s6) - Prop", "02 - [INSERT DATE] - Notices Served (s2, s6) - Prop (Email)", "02 - [INSERT DATE] - Notices Served (s6) - Corr", "02 - [INSERT DATE] - Notices Served (s6) - Corr (Email)", "02 - [INSERT DATE] - Notices Served (s6) - Prop", "02 - [INSERT DATE] - Notices Served (s6) - Prop (Email)", "05.1 - Conditional Consent", "05.1 - Conditional Consent (BO SIGNATURE)", "06 - Security for Expenses Notice", "06 - Security for Expenses Notice (Email)", "07 - Special Foundations Consent", "08 - Letter - Section 10.7 of the Party Wall Act", "08 - Letter - Section 10.7 of the Party Wall Act (Email)", "12.1 - Award 7th", "12.1 - Award 7th CUSTOM", "12.1 - Award D1", "12.1 - Award D1 CUSTOM", "14.1 - Schedule of Condition", "15.1 - Addendum Award D1", "15.1 - Addendum Award D2"]
 selected_doc, index = pick(options, title)
 print(selected_doc)
 #print(index)
@@ -120,10 +122,10 @@ todays_date = ws['BZ2'].value
 ao_i_we2 = ws['CA2'].value
 worksheet_url = ws['CB2'].value
 worksheet_name = ws['CC2'].value
-ao_surveyor = ws['CD2'].value
-aos_add_horz = ws['CE2'].value
-aos_add_vert = ws['CF2'].value
-AOS_gender = ws['CG2'].value
+ao_surveyor = ws['CM2'].value
+aos_add_horz = ws['CN2'].value
+aos_add_vert = ws['CO2'].value
+AOS_gender = ws['CP2'].value
 third_surveyor = ws['CH2'].value
 ts_add_horz = ws['CI2'].value
 ts_add_vert = ws['CJ2'].value
@@ -149,7 +151,7 @@ bos_add_horz = ws['DC2'].value
 bos_add_vert = ws['DD2'].value
 bos_gender = ws['DE2'].value
 bos_firstname = ws['DF2'].value
-aos_firstname = ws['DG2'].value
+aos_firstname = ws['DT2'].value
 ts_firstname = ws['DH2'].value
 bo_dear_mrmrs = ws['DI2'].value
 ao_dear_mrmrs = ws['DJ2'].value
@@ -169,6 +171,7 @@ eng_plans_vert = ws['DX2'].value
 
 # DocxTpl variables
 context = {
+    'currdate': currdate,
     'ao_letter_names': ws['A2'].value,
     'ao_notice_names': ws['B2'].value,
     'ao_fhlh': ws['C2'].value,
@@ -183,7 +186,8 @@ context = {
     'ao_correspond_add_horz': ws['L2'].value,
     'ao_property_add_vert': ws['M2'].value,
     'ao_correspond_add_vert': ws['N2'].value,
-    'notice_date': notice_date.strftime("%-d %B %Y"),
+    'notice_date': ws['O2'].value,
+#    'notice_date': notice_date.strftime("%-d %B %Y"),
     'bo_letter_names': ws['P2'].value,
     'bo_I_We': ws['Q2'].value,
     'bo_my_our': ws['R2'].value,
@@ -314,7 +318,10 @@ print(ao_property_add_horz)
 print(ao_property_add_vert)
 print(ao_correspond_add_horz)
 print(ao_correspond_add_vert)'''
-print(notice_date.strftime("%d %B %Y"))
+#print(notice_date.strftime("%d %B %Y"))
+print('Notice Date is ', notice_date)
+print('Todays Date is ',currdate)
+
 #print(type(ao_letter_names))
 
 tpl = DocxTemplate('templates/'+selected_doc+'.docx')
@@ -324,4 +331,4 @@ tpl.save(folder+'/'+selected_doc+'.docx')
 
 #unoconv -f ('output/'+selected_doc+'.docx', 'output/'+selected_doc+'.pdf')
 #unoconv -f pdf '01 - Letter of Appointment BO.docx'
-#doc2pdf custom_LoA.docx
+#doc2notice_date.strftime("%d %B %Y")pdf custom_LoA.docx
